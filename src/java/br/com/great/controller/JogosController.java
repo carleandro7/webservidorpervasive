@@ -90,4 +90,8 @@ public class JogosController {
     public ArrayList<Jogo> getJogosExecutando() {
         return JogosDAO.getInstance().getJogosExecutando();
     }
+
+    public Jogo getJogo(int jogo_id) {
+        return JogosDAO.getInstance().getJogo(jogo_id);
+    }
 }

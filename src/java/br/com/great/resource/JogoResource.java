@@ -125,7 +125,7 @@ public class JogoResource {
     
     /**
      * Criar uma nova instancia do jogo no servidor
-     * @param jogopai_id Id do pjogo
+     * @param jogo_id Id do pjogo
      * @param nomefecticio Nome ficticio para um jogo
      * @param jogador_id Id do jogador que esta criando o jogo
      * @return String
@@ -133,10 +133,10 @@ public class JogoResource {
     @GET
     @Path("/getNewJogo")
     @Produces("application/json")
-    public String getNewJogo(@QueryParam("jogopai_id") String jogopai_id, @QueryParam("jogador_id") String jogador_id,
+    public String getNewJogo(@QueryParam("jogo_id") String jogo_id, @QueryParam("jogador_id") String jogador_id,
             @QueryParam("nomeficticio") String nomefecticio) {           
-        String[][] key = {{"jogopai_id","jogador_id","nomeficticio"}} ;
-        String[][] value = {{jogopai_id,jogador_id, nomefecticio}} ;
+        String[][] key = {{"jogo_id","jogador_id","nomeficticio"}} ;
+        String[][] value = {{jogo_id,jogador_id, nomefecticio}} ;
         return ServidorJogo.getInstance().acao(JOGO_NEWJOGO,0, new OperacoesJSON().toJSONArray(key, value)).toString();
     }
 

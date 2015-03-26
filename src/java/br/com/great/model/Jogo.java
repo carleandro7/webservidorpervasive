@@ -14,14 +14,14 @@ public class Jogo {
     private int id;
     private String nome, icone, ordMecanicas, nomeficticio;
     private String latitude,longitude;
-    private int user_id, status, jogador_id, jogopai_id;
+    private int user_id, status, jogador_id, jogoExe_id;
 
-    public int getJogopai_id() {
-        return jogopai_id;
+    public int getJogoExe_id() {
+        return jogoExe_id;
     }
 
-    public void setJogopai_id(int jogopai_id) {
-        this.jogopai_id = jogopai_id;
+    public void setJogoExe_id(int jogoExe_id) {
+        this.jogoExe_id = jogoExe_id;
     }
 
     public String getOrdMecanicas() {

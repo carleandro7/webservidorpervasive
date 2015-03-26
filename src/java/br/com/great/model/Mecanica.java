@@ -12,9 +12,9 @@ import java.util.List;
  * @author carleandro
  */
 public class Mecanica {
-    private int tipo,mecanica_id,missoes_id;
-    private String nome;
-    private List<Integer> requisitos;
+    protected int tipo,mecanica_id,missoes_id;
+    protected String nome;
+    protected List<Integer> requisitos;
 
     public int getMecanica_id() {
         return mecanica_id;

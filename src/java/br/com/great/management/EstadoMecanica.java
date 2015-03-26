@@ -5,7 +5,6 @@
  */
 package br.com.great.management;
 
-import br.com.great.controller.MecanicaController;
 import br.com.great.model.MecComposta;
 import br.com.great.model.MecSimples;
 import org.json.JSONArray;
@@ -52,8 +51,5 @@ public class EstadoMecanica {
         this.tipo = tipo;
     }
     
-    public JSONArray getMecanicaJSON(){
-        return new MecanicaController().getMecania(String.valueOf(this.mecSimples.getMecsimples_id()));
-    }
     
 }

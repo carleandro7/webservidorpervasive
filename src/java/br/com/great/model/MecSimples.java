@@ -6,19 +6,24 @@
 package br.com.great.model;
 
 import java.sql.Time;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  *
  * @author carleandro
  */
-public class MecSimples extends Mecanica{
+public class MecSimples extends Mecanica {
+
     private int mecsimples_id, visivel;
     private String tipoMecanica;
     private Time tempo;
     private double latitude, longitude;
     private JSONObject mecanica;
-    
+
     public int getMecsimples_id() {
         return mecsimples_id;
     }
@@ -75,5 +80,23 @@ public class MecSimples extends Mecanica{
         this.mecanica = mecanica;
     }
 
-    
+    public JSONArray getMecSimplesJSON() {
+        JSONObject mecSimples = new JSONObject();
+        try {
+            mecSimples.put("mecsimples_id", this.mecsimples_id);
+            mecSimples.put("nome", this.nome);
+            mecSimples.put("tipo", this.tipoMecanica);
+            mecSimples.put("tempo", this.tempo);
+            mecSimples.put("latitude", this.latitude);
+            mecSimples.put("longitude", this.longitude);
+            mecSimples.put("visivel", this.visivel);
+            mecSimples.put("missoes_id", this.missoes_id);
+            mecSimples.put("mecanica_id", this.mecanica_id);
+            mecSimples.put("mecanica", this.mecanica);
+        } catch (JSONException ex) {
+            System.err.println("Erro getMecSimplesJson:"+ex.getMessage());
+        }
+
+        return new JSONArray().put(mecSimples);
+    }
 }

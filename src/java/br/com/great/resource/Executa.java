@@ -23,7 +23,7 @@ public class Executa {
     public static void main(String[] args)  { 
         
         GerenciamentoJogos jogo = new GerenciamentoJogos();
-        jogo.carregaJogos();
+        
     }
     
 }

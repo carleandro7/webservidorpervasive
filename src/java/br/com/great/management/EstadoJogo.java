@@ -51,7 +51,7 @@ public class EstadoJogo extends Thread {
         for (Grupo grupo : grupos) {
             EstadoGrupo estGrupo = new EstadoGrupo();
             estGrupo.setGrupo(grupo);
-            estGrupo.inicializaJogadoresGrupos();
+            //estGrupo.inicializaJogadoresGrupos();
             estGrupo.inicializaMissoesGrupos();
             listGrupo.add(estGrupo);
         }

@@ -39,7 +39,6 @@ public class ServidorJogo {
         if (servidor == null) {
             gerJogos = new GerenciamentoJogos();
             servidor = new Thread(gerJogos);
-            gerJogos.carregaJogos();
             servidor.start();
         }
         return true;

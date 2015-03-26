@@ -19,15 +19,7 @@ import org.json.JSONArray;
  */
 public class MecanicaController {
     
-    /**
-    * Método responsável por get em uma MecSimples de uma missao de um jogo do banco de dados
-     * @param mecanica_id String
-     * @return JSONArray
-     */
-    public JSONArray getMecania(String mecanica_id){
-        System.out.println("Enviando para o GIT");
-        return MecSimplesDAO.getInstance().getMecania(mecanica_id);
-    }
+    
     
     /**
     * Método responsável lista todas as mecanicas de uma missao

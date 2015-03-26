@@ -233,4 +233,46 @@ public class MissoesDAO extends ConnectionFactory{
 		return requisitos;
         }
 
+    /**
+	 * 
+	 * Método responsável por listar todas as missoes em uma distancia X para um jogador
+         * @param missao_id Id missao
+         * @param prioridade Primeiro das objetos
+	 * @return JSONArray Lista de mecanicas com os arquivos
+	 * @author Carleandro Noleto
+	 * @since 10/12/2014
+	 * @version 1.0
+	 */
+        public JSONArray getMissoes(int missao_id, int prioridade){
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		JSONArray missoes = null;
+		Connection conexao = criarConexao();
+		try {
+                        missoes= new JSONArray();
+                         String sql = "SELECT mecsimples.id, mecsimples.tipo,vfotos.id, vfotos.arqimage FROM missoes " +
+                            "LEFT JOIN mecanica on (missoes.id = mecanica.missoes_id) " +
+                             "LEFT JOIN mecsimples on (mecanica.id = mecsimples.mecanica_id) " +
+                             "LEFT JOIN vfotos on (vfotos.mecanica_id = mecsimples.id) " +
+                             "WHERE (mecsimples.tipo = 'vfotos' OR mecsimples.tipo = 'vsons' OR mecsimples.tipo ='vvideos') AND missoes.id = "+missao_id;
+                         
+                        pstmt = conexao.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				JSONObject missao = new JSONObject();
+                                missao.put("mecanica_id",rs.getInt("mecsimples.id"));
+                                missao.put("tipo",rs.getString("mecsimples.tipo"));
+                                missao.put("arquivo_id",rs.getInt("vfotos.id"));
+                                missao.put("arquivo",rs.getString("vfotos.arqimage"));        
+                                missao.put("prioridade",prioridade);
+				missoes.put(missao);
+			}
+		} catch (SQLException | JSONException e) {
+			System.out.println("Erro ao getMissoes " + e.getMessage());
+                } finally {
+			fecharConexao(conexao, pstmt, rs);
+		}
+		return missoes;
+	}
+
 }

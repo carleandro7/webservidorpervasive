@@ -321,6 +321,49 @@ public class JogadoresDAO extends ConnectionFactory {
 		}
 		return jogadores;
     }
+
+    public JSONArray getTodosArquivos(int grupo_id, String latitude, String longitude) {
+        		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		JSONArray arquivos = new JSONArray();
+                JSONArray listMissoes = new JSONArray();
+		Connection conexao = criarConexao();
+		try {
+                         listMissoes = MissoesDAO.getInstance().getMissoesRegiao(1, grupo_id, latitude, longitude, listMissoes,"");
+                         listMissoes = MissoesDAO.getInstance().getMissoesRegiao(2, grupo_id, latitude, longitude , listMissoes, sqlMissoesAnd(listMissoes));
+                         listMissoes = MissoesDAO.getInstance().getMissoesRegiao(3, grupo_id, latitude, longitude, listMissoes, sqlMissoesAnd(listMissoes));
+                         listMissoes = MissoesDAO.getInstance().getMissoesRegiao(4, grupo_id, latitude, longitude, listMissoes, sqlMissoesAnd(listMissoes));
+                         listMissoes = MissoesDAO.getInstance().getMissoesRegiao(0, grupo_id, latitude, longitude, listMissoes, sqlMissoesAnd(listMissoes));
+                         for(int j=0; j<listMissoes.length(); j++){
+                            arquivos.put(MissoesDAO.getInstance().getMissoes(listMissoes.getJSONObject(j).getInt("id"),
+                                    listMissoes.getJSONObject(j).getInt("prioridade")));
+                         }
+		} catch (JSONException e) {
+			System.out.println("Erro ao listar getTodosArquivos: " + e.getMessage());
+                } finally {
+			fecharConexao(conexao, pstmt, rs);
+		}
+		return arquivos;
+    }
+    private String sqlMissoesAnd(JSONArray listMissoes){
+        String sql ="";
+        try {
+            for(int j=0; j<listMissoes.length(); j++){
+                 if((j+1) ==listMissoes.length()){
+                     sql+=" missoes.id != "+listMissoes.getJSONObject(j).getInt("id");
+                 }else{
+                     sql+=" missoes.id != "+listMissoes.getJSONObject(j).getInt("id")+" AND ";
+                 }     
+            }    
+        } catch (Exception ex) {
+             System.out.println("Erro em sqlMissoesAnd: " + ex.getMessage()); 
+        }
+          if(sql.length()>0){
+              sql=" AND ("+sql+")";
+          }
+        return sql;
+    }
+
 	
 }
     

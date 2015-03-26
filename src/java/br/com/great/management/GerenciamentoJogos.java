@@ -13,7 +13,6 @@ import static br.com.great.helpful.Constants.JOGO_LISTAGRUPOS;
 import static br.com.great.helpful.Constants.JOGO_NEWJOGO;
 import br.com.great.helpful.OperacoesJSON;
 import br.com.great.model.Grupo;
-import br.com.great.model.Jogador;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +28,9 @@ import org.json.JSONObject;
  * @author carleandro
  */
 public class GerenciamentoJogos extends Thread {
-
-    public ArrayList<EstadoJogo> lisJogos = new ArrayList<EstadoJogo>();
+    public ArrayList<EstadoJogo> lisJogosExe = new ArrayList<EstadoJogo>();
     private int acao = 0;
-
+    private int id_jogo_exe=0;
     @Override
     public void run() {
         while (!isInterrupted()) {
@@ -66,7 +64,7 @@ public class GerenciamentoJogos extends Thread {
             switch (acao) {
                 case JOGO_NEWJOGO:
                     jobj = json.getJSONObject(0);
-                    jsonResult = newJogo(jobj.getInt("jogopai_id"), Integer.valueOf(jobj.getString("jogador_id")), jobj.getString("nomeficticio"));
+                    jsonResult = newJogo(jobj.getInt("jogo_id"), Integer.valueOf(jobj.getString("jogador_id")), jobj.getString("nomeficticio"));
                     break;
                 case JOGO_LISTAGRUPOS:
                     jsonResult = listGrupos(jogo_id);
@@ -86,17 +84,11 @@ public class GerenciamentoJogos extends Thread {
 
     public JSONArray acaoGrupo(int acao, int grupo_id, int jogo_id, JSONArray json) {
         JSONArray jsonResult = null;
-        for (int i = 0; i < lisJogos.size(); i++) {
-            if (lisJogos.get(i).getJogo().getId() == jogo_id) {
-                for (int j = 0; j < lisJogos.get(i).getListGrupo().size(); j++) {
-                    if (lisJogos.get(i).getListGrupo().get(j).getGrupo().getId() == grupo_id) {
-                        /*String[] key={"id", "nome", "nomeficticio", "latitude", "longitude", "status"};
-                         String[] value={String.valueOf(lisJogos.get(i).getJogo().getId()), 
-                         lisJogos.get(i).getJogo().getNome(), lisJogos.get(i).getJogo().getNomeficticio(),
-                         lisJogos.get(i).getJogo().getLatitude(), lisJogos.get(i).getJogo().getLongitude(), 
-                         String.valueOf(lisJogos.get(i).getJogo().getStatus())};
-                         json.put(new OperacoesJSON().toJSONObject(key, value));*/
-                        jsonResult = lisJogos.get(i).getListGrupo().get(j).acao(acao, json);
+        for (int i = 0; i < lisJogosExe.size(); i++) {
+            if (lisJogosExe.get(i).getJogo().getJogoExe_id() == jogo_id) {
+                for (int j = 0; j < lisJogosExe.get(i).getListGrupo().size(); j++) {
+                    if (lisJogosExe.get(i).getListGrupo().get(j).getGrupo().getId() == grupo_id) {
+                        jsonResult = lisJogosExe.get(i).getListGrupo().get(j).acao(acao, json);
                     }
                 }
             }
@@ -109,50 +101,38 @@ public class GerenciamentoJogos extends Thread {
     }
 
     private JSONArray newJogo(int jogo_id, int jogador_id, String nome) throws JSONException {
-        /*EstadoJogo estJogo = new EstadoJogo();
-        Jogo jogo = new JogosController().setNewJogo(jogo_id, jogador_id, nome);
+        EstadoJogo estJogo = new EstadoJogo();
+        Jogo jogo = new JogosController().getJogo(jogo_id);
+        jogo.setNomeficticio(nome);
+        jogo.setJogador_id(jogador_id);
+        jogo.setJogoExe_id(++id_jogo_exe);
         estJogo.setJogo(jogo);
         estJogo.iniciaConfiguracoes();
-        lisJogos.add(estJogo);
-        return new JSONArray().put(new JSONObject().put("return", "true"));*/
-        return null;
+        lisJogosExe.add(estJogo);
+        return new JSONArray().put(new JSONObject().put("return", "true"));
+        
     }
 
     private JSONArray listGrupos(int jogo_id) {
-        for (EstadoJogo estJogo : lisJogos) {
-            if (estJogo.getJogo().getId() == jogo_id) {
+        for (EstadoJogo estJogo : lisJogosExe) {
+            if (estJogo.getJogo().getJogoExe_id() == jogo_id) {
                 return estJogo.getGrupos();
             }
         }
         return null;
     }
 
-    public JSONArray carregaJogos() {
-        try {
-            ArrayList<Jogo> lista = new JogosController().getJogosExecutando();
-            for (Jogo jogo : lista) {
-                EstadoJogo estJogo = new EstadoJogo();
-                estJogo.setJogo(jogo);
-                estJogo.iniciaConfiguracoes();
-                lisJogos.add(estJogo);
-            }
-            return new JSONArray().put(new JSONObject().put("return", "true"));
-        } catch (JSONException ex) {
-            System.err.println("Erro carregaJogos:" + ex.getMessage());
-        }
-        return null;
-    }
-
-    private JSONArray listJogosExecutando(int jogopai_id, int jogador_id) {
+    private JSONArray listJogosExecutando(int jogo_id, int jogador_id) {
         JSONArray json = new JSONArray();
         try {
-            for (EstadoJogo estJogo : lisJogos) {
-                if (estJogo.getJogo().getJogopai_id() == jogopai_id) {
+            for (EstadoJogo estJogo : lisJogosExe) {
+                if (estJogo.getJogo().getId() == jogo_id) {
                     JSONObject jobj = new JSONObject();
                     jobj.put("id", estJogo.getJogo().getId());
                     jobj.put("nome", estJogo.getJogo().getNome());
                     jobj.put("icone", estJogo.getJogo().getIcone());
                     jobj.put("nomeficticio", estJogo.getJogo().getNomeficticio());
+                    jobj.put("jogoexe_id", estJogo.getJogo().getJogoExe_id());
                     Grupo grupo = estJogo.grupoJogadorParticipando(jogador_id);
                     if (grupo != null) {
                         jobj.put("grupo_id", estJogo.grupoJogadorParticipando(jogador_id).getId());
@@ -171,22 +151,18 @@ public class GerenciamentoJogos extends Thread {
     }
 
     private void enviarLocalizacao() {
-        JSONArray jsonJogadores;
-        JSONArray jsonGrupos = new JSONArray();
-        Map<String, String> params = new HashMap<String, String>();
-                System.err.println("enviando mensgaem");
-        boolean localizacaoAlterada = false;
-        for (int i = 0; i < lisJogos.size(); i++) {
+        
+        for (int i = 0; i < lisJogosExe.size(); i++) {
             if(alterouLocalizacaoJogador(i)){
-                alterouLocalizacaoJogadorJson(i, lisJogos.get(i).getJogo());
+                alterouLocalizacaoJogadorJson(i, lisJogosExe.get(i).getJogo());
             }
         }
     }
 
     private boolean alterouLocalizacaoJogador(int jogo_id) {
-        for (int j = 0; j < lisJogos.get(jogo_id).getListGrupo().size(); j++) {
-            for (int h = 0; h < lisJogos.get(jogo_id).getListGrupo().get(j).getListJogadores().size(); h++) {
-                if (lisJogos.get(jogo_id).getListGrupo().get(j).getListJogadores().get(h).getAtualizarLocalizacao() == 1) {
+        for (int j = 0; j < lisJogosExe.get(jogo_id).getListGrupo().size(); j++) {
+            for (int h = 0; h < lisJogosExe.get(jogo_id).getListGrupo().get(j).getListJogadores().size(); h++) {
+                if (lisJogosExe.get(jogo_id).getListGrupo().get(j).getListJogadores().get(h).getAtualizarLocalizacao() == 1) {
                     return true;
                 }
             }
@@ -197,23 +173,23 @@ public class GerenciamentoJogos extends Thread {
     private void alterouLocalizacaoJogadorJson(int jogo_posicao, Jogo jogo) {
        try{
         JSONArray jogoJson = new JSONArray();
-        for (int j = 0; j < lisJogos.get(jogo_posicao).getListGrupo().size(); j++) {
+        for (int j = 0; j < lisJogosExe.get(jogo_posicao).getListGrupo().size(); j++) {
             JSONObject grupo = new JSONObject();
             String[] key = {"grupo_id", "nome"};
-            String[] value = {String.valueOf(lisJogos.get(jogo_posicao).getListGrupo().get(j).getGrupo().getId()),
-                lisJogos.get(jogo_posicao).getListGrupo().get(j).getGrupo().getNome()};
+            String[] value = {String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getGrupo().getId()),
+                lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getGrupo().getNome()};
             grupo.put("grupo",new OperacoesJSON().toJSONObject(key, value));
             
             List<JSONObject> listJogador = new ArrayList<JSONObject>();
-            for (int h = 0; h < lisJogos.get(jogo_posicao).getListGrupo().get(j).getListJogadores().size(); h++) {
+            for (int h = 0; h < lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().size(); h++) {
                 String[] keyJogador = {"id", "nome", "latitude", "longitude"};
                 String[] valueJogador = {
-                    String.valueOf(lisJogos.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getId()),
-                    lisJogos.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getEmail(),
-                    String.valueOf(lisJogos.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getLatitude()),
-                    String.valueOf(lisJogos.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getLongitude())
+                    String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getId()),
+                    lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getEmail(),
+                    String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getLatitude()),
+                    String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getLongitude())
                 };
-                lisJogos.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).setAtualizarLocalizacao(0);    
+                lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).setAtualizarLocalizacao(0);    
                 listJogador.add(new OperacoesJSON().toJSONObject(keyJogador, valueJogador));
             }
             grupo.put("jogadores", listJogador);

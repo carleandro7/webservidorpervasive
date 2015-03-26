@@ -29,12 +29,13 @@ public final class Constants {
    public static final int JOGO_LISTAGRUPOS = 2;
    public static final int JOGO_LISTAEXECUTANDO = 3;
    
-   public static final int GRUPO_INSERIRPARTICIPANTE = 1;
-   public static final int GRUPO_LISTAARQUIVOS = 2;
-   public static final int GRUPO_MECANICAATUAL = 3;
-   public static final int GRUPO_SETSTATUSMECANICA = 4;
-   public static final int JOGADOR_SETLOCALIZACAO = 5;
-   public static final int JOGADOR_ENVIARLOCALIZACAO = 6;
+   public static final int GRUPO_INSERIRPARTICIPANTE = 4;
+   public static final int GRUPO_LISTAARQUIVOS = 5;
+   public static final int GRUPO_MECANICAATUAL = 6;
+   public static final int GRUPO_SETSTATUSMECANICA = 7;
+   public static final int GRUPO_GETMECLIBERADA = 10;
+   public static final int JOGADOR_SETLOCALIZACAO = 8;
+   public static final int JOGADOR_ENVIARLOCALIZACAO = 9;
  
   private Constants() {
     throw new UnsupportedOperationException();

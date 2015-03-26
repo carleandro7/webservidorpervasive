@@ -88,8 +88,7 @@ public class JogadoresController {
      * @return JSONArray lista de todos os arquivos
      */
     public JSONArray getTodosArquivos(int grupo_id, String latitude, String longitude) {
-        //return JogadoresDAO.getInstance().getTodosArquivos(grupo_id, latitude, longitude);
-        return null;
+        return JogadoresDAO.getInstance().getTodosArquivos(grupo_id, latitude, longitude);        
     }
 
     public JSONArray getTodosArquivos(int grupo_id) {

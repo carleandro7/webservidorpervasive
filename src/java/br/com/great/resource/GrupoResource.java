@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.com.great.resource;
 
 import br.com.great.GCMGoogle.EnviarMensagemGCM;
@@ -25,8 +24,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import org.json.JSONArray;
 
-
-
 /**
  * REST Web Service Grupo
  *
@@ -37,14 +34,16 @@ public class GrupoResource {
 
     @Context
     private UriInfo context;
-    
+
     /**
      * Creates a new instance of GruposResource
      */
     public GrupoResource() {
     }
+
     /**
      * Método responsável get todos os grupos de um jogo
+     *
      * @param jogo_id String
      * @return String
      * @author Carleandro Noleto
@@ -55,11 +54,12 @@ public class GrupoResource {
     @Path("/getGrupos")
     @Produces("application/json")
     public String getGrupos(@QueryParam("jogo_id") String jogo_id) {
-         return ServidorJogo.getInstance().acao(Constants.JOGO_LISTAGRUPOS, Integer.valueOf(jogo_id), null).toString();
+        return ServidorJogo.getInstance().acao(Constants.JOGO_LISTAGRUPOS, Integer.valueOf(jogo_id), null).toString();
     }
-    
+
     /**
      * Método responsável por seta um jogador em um grupo
+     *
      * @param jogo_id String
      * @param grupo_id String
      * @param jogador_id String
@@ -74,11 +74,14 @@ public class GrupoResource {
     public String setGrupoParticipando(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id,
             @QueryParam("jogador_id") String jogador_id) {
         String[][] key = {{"jogador_id"}};
-        String[][] value = {{jogador_id}} ;
-         return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_INSERIRPARTICIPANTE,Integer.valueOf(grupo_id),Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
+        String[][] value = {{jogador_id}};
+        return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_INSERIRPARTICIPANTE, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
     }
+
     /**
-     * Método responsável lista todos os arquivos para um jogador a depender da localização
+     * Método responsável lista todos os arquivos para um jogador a depender da
+     * localização
+     *
      * @param jogo_id String
      * @param grupo_id String
      * @param latitude String
@@ -94,52 +97,63 @@ public class GrupoResource {
     public String getTodosArquivos(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id, @QueryParam("latitude") String latitude,
             @QueryParam("longitude") String longitude) {
         String[][] key = {{"latitude", "longitude"}};
-        String[][] value = {{latitude, longitude}} ;
-         return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_LISTAARQUIVOS,Integer.valueOf(grupo_id),Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
+        String[][] value = {{latitude, longitude}};
+        return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_LISTAARQUIVOS, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
     }
-    
+
     @GET
     @Path("/getMecanicaAtual")
     @Produces("application/json")
     public String getMecanicaAtual(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id) {
-         return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_MECANICAATUAL,Integer.valueOf(grupo_id),Integer.valueOf(jogo_id), new JSONArray()).toString();
+        return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_MECANICAATUAL, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), new JSONArray()).toString();
     }
-    
+
+    @GET
+    @Path("/getMecanicaLiberada")
+    @Produces("application/json")
+    public String getMecanicaLiberada(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id, @QueryParam("mecanica_id") String mecanica_id) {
+        String[][] key = {{"mecanica_id"}};
+        String[][] value = {{mecanica_id}};
+        return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_GETMECLIBERADA, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
+    }
+
     @GET
     @Path("/setStatusMecanica")
     @Produces("application/json")
-    public String setStatusMecanica(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id, 
+    public String setStatusMecanica(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id,
             @QueryParam("mecanica_id") String mecanica_id, @QueryParam("jogador_id") String jogador_id) {
-            String[][] key = {{"mecanica_id", "jogador_id"}};
-            String[][] value = {{mecanica_id, jogador_id}};
-         return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_SETSTATUSMECANICA,Integer.valueOf(grupo_id),Integer.valueOf(jogo_id),(new OperacoesJSON().toJSONArray(key, value))).toString();
+        String[][] key = {{"mecanica_id", "jogador_id"}};
+        String[][] value = {{mecanica_id, jogador_id}};
+        return ServidorJogo.getInstance().acaoGrupo(Constants.GRUPO_SETSTATUSMECANICA, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
     }
-    
+
     @GET
     @Path("/setLocalizacaoJogador")
     @Produces("application/json")
-    public String setLocalizacaoJogador(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id, 
+    public String setLocalizacaoJogador(@QueryParam("jogo_id") String jogo_id, @QueryParam("grupo_id") String grupo_id,
             @QueryParam("jogador_id") String jogador_id, @QueryParam("latitude") String latitude, @QueryParam("longitude") String longitude) {
-            String[][] key = {{"jogador_id", "latitude", "longitude"}};
-            String[][] value = {{jogador_id, latitude, longitude}} ;
-         return ServidorJogo.getInstance().acaoGrupo(Constants.JOGADOR_SETLOCALIZACAO,Integer.valueOf(grupo_id),Integer.valueOf(jogo_id),(new OperacoesJSON().toJSONArray(key, value))).toString();
+        String[][] key = {{"jogador_id", "latitude", "longitude"}};
+        String[][] value = {{jogador_id, latitude, longitude}};
+        return ServidorJogo.getInstance().acaoGrupo(Constants.JOGADOR_SETLOCALIZACAO, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
     }
-    
+
     @GET
     @Path("/setMensagem")
     @Produces("application/json")
-    public String setMensagem(@QueryParam("regs_id") String regs_id, @QueryParam("user") String user, 
+    public String setMensagem(@QueryParam("regs_id") String regs_id, @QueryParam("user") String user,
             @QueryParam("tipoacao") String tipoacao) {
-            List<String> regIdList = new ArrayList<String>();
-            regIdList.add(regs_id);
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("user", user);
-            params.put("tipoacao", tipoacao);
-            new EnviarMensagemGCM().enviarParaDeviceBckMap(params, regIdList);
-         return "true";
+        List<String> regIdList = new ArrayList<String>();
+        regIdList.add(regs_id);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("user", user);
+        params.put("tipoacao", tipoacao);
+        new EnviarMensagemGCM().enviarParaDeviceBckMap(params, regIdList);
+        return "true";
     }
+
     /**
      * PUT method for updating or creating an instance of JogoResource
+     *
      * @param content representation for the resource
      */
     @PUT
