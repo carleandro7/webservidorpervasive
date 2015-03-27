@@ -6,8 +6,8 @@
 
 package br.com.great.resource;
 
-import br.com.great.management.EstadoJogo;
-import br.com.great.management.GerenciamentoJogos;
+import br.com.great.gerenciamento.EstadoJogo;
+import br.com.great.gerenciamento.GerenciadoJogos;
 import org.json.JSONException;
 
 
@@ -22,7 +22,7 @@ public class Executa {
      */
     public static void main(String[] args)  { 
         
-        GerenciamentoJogos jogo = new GerenciamentoJogos();
+        GerenciadoJogos jogo = new GerenciadoJogos();
         
     }
     

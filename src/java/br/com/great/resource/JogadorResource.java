@@ -6,20 +6,20 @@
 package br.com.great.resource;
 
 import br.com.great.controller.JogadoresController;
+import br.com.great.helpful.Constants;
+import br.com.great.helpful.OperacoesJSON;
+import br.com.great.gerenciamento.ServidorJogo;
 import br.com.great.model.Jogador;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
+import org.json.JSONArray;
 
 /**
  * REST Web Service jogadro
@@ -94,15 +94,9 @@ public class JogadorResource {
     @Path("cadastrarJogador")
     @Produces("application/json")
     public String cadastrarJogador(@QueryParam("email") String email, @QueryParam("password") String password) {
-        String mensagem = new JogadoresController().cadastrarJogador(email, password);
-        boolean salvo;
-        if (mensagem.equals("true")) {
-            salvo = true;
-            mensagem = "Cadastrado com sucesso!";
-        } else {
-            salvo = false;
-        }
-        return ("{\"salvo\":\"" + salvo + "\",\"mensagem\":\"" + mensagem + "\"}");
+        String[][] key = {{"email","password"}};
+        String[][] value = {{email, password}};
+       return ServidorJogo.getInstance().acao(Constants.JOGADOR_CADJOGADOR, 0,  (new OperacoesJSON().toJSONArray(key, value))).toString();
     }
 
     /**
@@ -115,7 +109,21 @@ public class JogadorResource {
     @Path("registroDevice")
     @Produces("application/json")
     public String registroDevice(@QueryParam("jogador_id") String jogador_id, @QueryParam("device_id") String device_id) {
-        return (new JogadoresController().registroDevice(jogador_id, device_id));
+        String[][] key = {{"jogador_id","device_id"}};
+        String[][] value = {{jogador_id, device_id}};
+        JSONArray json = ServidorJogo.getInstance().acao(Constants.JOGADOR_REGDISPOSITIVO, 0,  (new OperacoesJSON().toJSONArray(key, value)));
+        return new OperacoesJSON().toJSONObject(json, 0, "result");
+    }
+    
+    
+    /**
+     * PUT method for updating or creating an instance of JogoResource
+     *
+     * @param content representation for the resource
+     */
+    @PUT
+    @Consumes("application/json")
+    public void putJson(String content) {
     }
 
 }

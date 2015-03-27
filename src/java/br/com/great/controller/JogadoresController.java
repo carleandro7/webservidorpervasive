@@ -54,7 +54,7 @@ public class JogadoresController {
      * @param password String
      * @return String true se cadastrado com sucesso
      */
-    public String cadastrarJogador(String email, String password) {
+    public Jogador cadastrarJogador(String email, String password) {
         System.out.println("Enviando para o GIT");
 		return JogadoresDAO.getInstance().cadastrar(email, password);
     }
@@ -66,19 +66,17 @@ public class JogadoresController {
      * @param device_id id que idencifica o dispositivo atraves de msg GCM
      * @return String
      */
-    public String registroDevice(String jogador_id, String device_id) {
+    public boolean registroDevice(int jogador_id, String device_id) {
         System.out.println("Enviando para o GIT");
 		return JogadoresDAO.getInstance().registroDevice(jogador_id, device_id);
     }
     
-    /**
-     * Metodo responsavel por verificar e alterar se o usuario estiver com outro
-     * dispositivo
-     * @param grupo_id id do grupo do jogo
-     * @return ArrayList lista de jogadores que estao naquele grupo
-     */
     public ArrayList<Jogador> getJogadores(int grupo_id) {
         return JogadoresDAO.getInstance().getJogadores(grupo_id);
+    }
+
+    public ArrayList<Jogador> getJogadoresAll() {
+        return JogadoresDAO.getInstance().getJogadoresAll();
     }
     /**
      * Lista de todos os arquivos iniciais de um jogo para um jogador

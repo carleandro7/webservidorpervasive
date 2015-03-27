@@ -36,6 +36,8 @@ public final class Constants {
    public static final int GRUPO_GETMECLIBERADA = 10;
    public static final int JOGADOR_SETLOCALIZACAO = 8;
    public static final int JOGADOR_ENVIARLOCALIZACAO = 9;
+   public static final int JOGADOR_CADJOGADOR = 10;
+   public static final int JOGADOR_REGDISPOSITIVO = 11;
  
   private Constants() {
     throw new UnsupportedOperationException();

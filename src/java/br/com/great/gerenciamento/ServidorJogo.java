@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.great.management;
+package br.com.great.gerenciamento;
 
 import org.json.JSONArray;
 
@@ -14,7 +14,7 @@ import org.json.JSONArray;
 public class ServidorJogo {
 
     private Thread servidor;
-    private GerenciamentoJogos gerJogos;
+    private GerenciadoJogos gerJogos;
 
     private static ServidorJogo instance;
 
@@ -37,7 +37,8 @@ public class ServidorJogo {
 
     public boolean StartServidor() {
         if (servidor == null) {
-            gerJogos = new GerenciamentoJogos();
+            gerJogos = new GerenciadoJogos();
+            gerJogos.carregaJogadores();
             servidor = new Thread(gerJogos);
             servidor.start();
         }

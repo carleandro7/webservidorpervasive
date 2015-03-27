@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.great.management;
+package br.com.great.gerenciamento;
 
 import br.com.great.dao.GruposDAO;
 import br.com.great.model.Grupo;
@@ -17,35 +17,12 @@ import org.json.JSONObject;
  *
  * @author carleandro
  */
-public class EstadoJogo extends Thread {
+public class EstadoJogo{
 
     private Jogo jogo;
     private int versao;
-    private int acao = 0;
     private ArrayList<EstadoGrupo> listGrupo = new ArrayList<EstadoGrupo>();
-
-    @Override
-    public void run() {
-        while (true) {
-           if(jogo.getOrdMecanicas().equals("1")){
-            switch (acao) {
-                case 1:
-                    
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-                default:
-                //comandos caso nenhuma das opções anteriores tenha sido escolhida
-                }
-           }
-        }
-    }
     
-
     public void iniciaConfiguracoes() {
         ArrayList<Grupo> grupos = new GruposDAO().getTodosGrupos(String.valueOf(jogo.getId()));
         for (Grupo grupo : grupos) {
@@ -55,14 +32,6 @@ public class EstadoJogo extends Thread {
             estGrupo.inicializaMissoesGrupos();
             listGrupo.add(estGrupo);
         }
-    }
-
-    public ArrayList<EstadoGrupo> getListGrupo() {
-        return listGrupo;
-    }
-
-    public void setListGrupo(ArrayList<EstadoGrupo> listGrupo) {
-        this.listGrupo = listGrupo;
     }
 
     public int getVersao() {
@@ -84,7 +53,8 @@ public class EstadoJogo extends Thread {
     public JSONArray getGrupos() {
         JSONArray json = new JSONArray();
         try {
-            for (EstadoGrupo grupo : listGrupo) {
+            for (EstadoGrupo grupo : listGrupo) { 
+                
                 JSONObject jobj = new JSONObject();
                 jobj.put("id", grupo.getGrupo().getId());
                 jobj.put("nome", grupo.getGrupo().getNome());
@@ -103,6 +73,14 @@ public class EstadoJogo extends Thread {
             }
         }
         return null;
+    }
+
+    public ArrayList<EstadoGrupo> getListGrupo() {
+        return listGrupo;
+    }
+
+    public void setListGrupo(ArrayList<EstadoGrupo> listGrupo) {
+        this.listGrupo = listGrupo;
     }
     
 

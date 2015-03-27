@@ -33,6 +33,15 @@ public class OperacoesJSON {
         }
         return jobj;
     }
+    public JSONObject toJSONObject(String key, String value){
+        JSONObject jobj = new JSONObject();
+        try {
+             jobj.put(key, value);
+        } catch (JSONException ex) {
+           System.err.println("Erro toJSONObject:"+ex.getMessage());
+        }
+        return jobj;
+    }
     /**
      * Método responsável por receber um conjunto de chaves com valores retornar jsonArray
      * @param key String[]
@@ -44,6 +53,11 @@ public class OperacoesJSON {
        for(int j=0; j<key.length; j++){ 
            json.put(toJSONObject(key[j], value[j]));
        }
+       return json;
+    }
+    public JSONArray toJSONArray(String key, String value){
+       JSONArray json = new JSONArray();
+           json.put(toJSONObject(key, value));
        return json;
     }
     

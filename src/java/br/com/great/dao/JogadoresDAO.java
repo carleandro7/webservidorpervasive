@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -130,13 +131,14 @@ public class JogadoresDAO extends ConnectionFactory {
 		Connection conexao = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		Jogador jogador = new Jogador();
+		Jogador jogador=null;
 		conexao = criarConexao();
 		try {
 			pstmt = conexao.prepareStatement("select * from jogadores where id = "+id);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()){
+                                jogador = new Jogador();
 				jogador.setId(rs.getInt("id"));
 				jogador.setEmail(rs.getString("email"));
 				jogador.setPassword(rs.getString("password"));
@@ -159,25 +161,31 @@ public class JogadoresDAO extends ConnectionFactory {
 	 * @since 27/11/2014
 	 * @version 1.0
 	 */
-        public String cadastrar(String email, String password) {
+        public Jogador cadastrar(String email, String password) {
                     Connection conexao = null;
                     PreparedStatement pstmt = null;
                     ResultSet rs = null;
-                    String mensagem="";
-
+                    Jogador jogador=null;
                     try{
                         conexao = criarConexao();
                         pstmt = conexao.prepareStatement("select * from jogadores where email='"+email+"'");
                         rs = pstmt.executeQuery();
-
                         if(rs.next()){//existi pelo menos um registro nessa lista
-                            mensagem = "Esse email já esta cadastrador";
                         }else{
-                            pstmt = conexao.prepareStatement("INSERT INTO  jogadores(`email` ,`password`) VALUES (?, ?)");
+                            String sql = "INSERT INTO  jogadores(`email` ,`password`) VALUES (?, ?)";
+                            pstmt=conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                             pstmt.setString(1, email);
                             pstmt.setString(2, password);
                             pstmt.executeUpdate();
-                            mensagem="true";
+                            rs = pstmt.getGeneratedKeys();
+                            rs.next();
+                            jogador = new Jogador();
+                            jogador.setId((int) rs.getLong(1));
+                            jogador.setEmail(email);
+                            jogador.setPassword(password);
+                            jogador.setIddispositivo("");
+                            jogador.setLatitude(0);
+                            jogador.setLongitude(0);
                         }
 
                     } catch (SQLException e) {
@@ -185,7 +193,7 @@ public class JogadoresDAO extends ConnectionFactory {
                     } finally {
                             fecharConexao(conexao, pstmt, rs);
                     }
-                    return mensagem;
+                    return jogador;
         }
         
         /**
@@ -269,16 +277,16 @@ public class JogadoresDAO extends ConnectionFactory {
      * @param device_id id que idencifica o dispositivo atraves de msg GCM
      * @return String Mensagem tru e false
      */
-        public String registroDevice(String jogador_id, String device_id) {
+        public boolean registroDevice(int jogador_id, String device_id) {
         	Connection conexao = null;
                     PreparedStatement pstmt = null;
                     ResultSet rs = null;
-                    String mensagem="false";
+                    boolean mensagem=false;
                     conexao = criarConexao();
 		try {
                     pstmt = conexao.prepareStatement("UPDATE jogadores SET iddispositivo ='"+device_id+"' WHERE id = "+jogador_id);
                     pstmt.executeUpdate();
-                    mensagem="true";
+                    mensagem=true;
 			
 		} catch (SQLException e) {
 			System.out.println("Erro ao atualizar deviceRegsID dos jogadores: " + e.getMessage());
@@ -288,12 +296,6 @@ public class JogadoresDAO extends ConnectionFactory {
 		return mensagem;
     }
 
-     /**
-     * Metodo responsavel por verificar e alterar se o usuario estiver com outro
-     * dispositivo
-     * @param grupo_id id do grupo do jogo
-     * @return ArrayList lista de jogadores que estao naquele grupo
-     */
     public ArrayList<Jogador> getJogadores(int grupo_id) {
             	Connection conexao = null;
 		PreparedStatement pstmt = null;
@@ -316,6 +318,35 @@ public class JogadoresDAO extends ConnectionFactory {
 			
 		} catch (SQLException e) {
 			System.out.println("Erro ao listar todos por grupo getJogadores: " + e.getMessage());
+		} finally {
+			fecharConexao(conexao, pstmt, rs);
+		}
+		return jogadores;
+    }
+    
+        public ArrayList<Jogador> getJogadoresAll() {
+            	Connection conexao = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Jogador> jogadores = null;		
+		conexao = criarConexao();		
+		try {
+                        jogadores = new ArrayList<Jogador>();
+			pstmt = conexao.prepareStatement("SELECT * FROM jogadores ");
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				Jogador jogador = new Jogador();				
+				jogador.setId(rs.getInt("id"));
+				jogador.setIddispositivo(rs.getString("iddispositivo"));				
+                                jogador.setEmail(rs.getString("email"));				
+                                jogador.setPassword(rs.getString("password"));
+                                jogador.setLatitude(0);
+                                jogador.setLongitude(0);
+				jogadores.add(jogador);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Erro ao listar todos Jogadores: " + e.getMessage());
 		} finally {
 			fecharConexao(conexao, pstmt, rs);
 		}

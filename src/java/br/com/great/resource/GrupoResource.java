@@ -6,7 +6,7 @@
 package br.com.great.resource;
 
 import br.com.great.GCMGoogle.EnviarMensagemGCM;
-import br.com.great.management.ServidorJogo;
+import br.com.great.gerenciamento.ServidorJogo;
 import br.com.great.helpful.Constants;
 import br.com.great.helpful.OperacoesJSON;
 import java.util.ArrayList;
@@ -134,7 +134,7 @@ public class GrupoResource {
             @QueryParam("jogador_id") String jogador_id, @QueryParam("latitude") String latitude, @QueryParam("longitude") String longitude) {
         String[][] key = {{"jogador_id", "latitude", "longitude"}};
         String[][] value = {{jogador_id, latitude, longitude}};
-        return ServidorJogo.getInstance().acaoGrupo(Constants.JOGADOR_SETLOCALIZACAO, Integer.valueOf(grupo_id), Integer.valueOf(jogo_id), (new OperacoesJSON().toJSONArray(key, value))).toString();
+        return ServidorJogo.getInstance().acao(Constants.JOGADOR_SETLOCALIZACAO, 0, (new OperacoesJSON().toJSONArray(key, value))).toString();
     }
 
     @GET
