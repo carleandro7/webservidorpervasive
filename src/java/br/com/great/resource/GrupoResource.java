@@ -7,8 +7,8 @@ package br.com.great.resource;
 
 import br.com.great.GCMGoogle.EnviarMensagemGCM;
 import br.com.great.gerenciamento.ServidorJogo;
-import br.com.great.helpful.Constants;
-import br.com.great.helpful.OperacoesJSON;
+import br.com.great.util.Constants;
+import br.com.great.util.OperacoesJSON;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

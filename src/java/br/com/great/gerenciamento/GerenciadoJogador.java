@@ -2,8 +2,7 @@ package br.com.great.gerenciamento;
 
 import br.com.great.controller.JogadoresController;
 import br.com.great.dao.JogadoresDAO;
-import br.com.great.gerenciamento.PlayJogo;
-import br.com.great.helpful.OperacoesJSON;
+import br.com.great.util.OperacoesJSON;
 import br.com.great.model.Jogador;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +43,9 @@ public class GerenciadoJogador {
         String mensagem = "";
         if (jogador != null) {
             salvo = true;
+            EstadoJogador estadoJogador = new EstadoJogador();
+            estadoJogador.setJogador(jogador);
+            PlayJogo.getListJogadores().add(estadoJogador);
             mensagem = "Cadastrado com sucesso!";
         } else {
             salvo = false;

@@ -9,7 +9,7 @@ import br.com.great.controller.MecanicaController;
 import br.com.great.controller.MissoesController;
 import br.com.great.model.MecSimples;
 import br.com.great.model.Missao;
-import br.com.great.helpful.OperacoesJSON;
+import br.com.great.util.OperacoesJSON;
 import br.com.great.model.Mecanica;
 import java.util.ArrayList;
 import org.json.JSONObject;

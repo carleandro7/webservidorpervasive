@@ -114,4 +114,6 @@ public class EstadoGrupo {
         }
         return jsonResult;
     }
+
+   
 }

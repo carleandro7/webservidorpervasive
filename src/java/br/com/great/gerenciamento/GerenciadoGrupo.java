@@ -7,10 +7,15 @@ package br.com.great.gerenciamento;
 
 import br.com.great.controller.JogadoresController;
 import br.com.great.model.Jogador;
-import br.com.great.helpful.Constants;
-import br.com.great.helpful.OperacoesJSON;
+import br.com.great.util.Constants;
+import br.com.great.util.OperacoesJSON;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -59,6 +64,9 @@ public class GerenciadoGrupo {
                 case Constants.GRUPO_GETMECLIBERADA:
                     jsonResult = estGrupo.getMecanicaLiberada(json.getJSONObject(0).getInt("mecanica_id"));
                     break;
+                case Constants.GRUPO_LOCALIZACAOJOGADORES:
+                    jsonResult = getLocalJogadores(estGrupo, json);
+                    break;
                 default:
                 //comandos caso nenhuma das opções anteriores tenha sido escolhida
             }
@@ -75,15 +83,7 @@ public class GerenciadoGrupo {
             EstadoJogador estJogador = getJogadorLista(jogador_id);
             if (estJogador != null) {
                 estadoGrupo.getListJogadores().add(estJogador);
-            } else {
-                Jogador jogador = new JogadoresController().getJogador(jogador_id);
-                if (jogador != null) {
-                    estJogador = new EstadoJogador();
-                    estJogador.setJogador(jogador);
-                    estadoGrupo.getListJogadores().add(estJogador);
-                    PlayJogo.getListJogadores().add(estJogador);
-                    result = true;
-                }
+                result = true;
             }
         }
         String[][] key = {{"result"}};
@@ -105,6 +105,28 @@ public class GerenciadoGrupo {
                 getTodosArquivos(estGrupo.getGrupo().getId(),
                         new OperacoesJSON().toJSONObject(json, 0, "latitude"),
                         new OperacoesJSON().toJSONObject(json, 0, "longitude"));
+    }
+
+    public JSONArray getLocalJogadores(EstadoGrupo estGrupo, JSONArray json) {
+        try {
+            JSONObject grupo = new JSONObject();
+            String[] key = {"grupo_id", "nome"};
+            String[] value = {String.valueOf(estGrupo.getGrupo().getId()), estGrupo.getGrupo().getNome()};
+            List<JSONObject> listJogador = new ArrayList<JSONObject>();
+            grupo.put("grupo", new OperacoesJSON().toJSONObject(key, value));
+            for (EstadoJogador estJogador : estGrupo.getListJogadores()) {
+                String[] keyJogador = {"id", "nome", "latitude", "longitude"};
+                String[] valueJogador = {String.valueOf(estJogador.getJogador().getId()), estJogador.getJogador().getEmail(),
+                    String.valueOf(estJogador.getJogador().getLatitude()), String.valueOf(estJogador.getJogador().getLongitude())};
+                listJogador.add(new OperacoesJSON().toJSONObject(keyJogador, valueJogador));    
+            }
+            grupo.put("jogadores", listJogador);
+            json.put(grupo);
+            return json;
+        } catch (JSONException ex) {
+            System.err.println("Erro em getLocalJogadores:" + ex.getMessage());
+        }
+        return null;
     }
 
 }

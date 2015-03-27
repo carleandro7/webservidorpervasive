@@ -6,8 +6,8 @@
 package br.com.great.resource;
 
 import br.com.great.controller.JogadoresController;
-import br.com.great.helpful.Constants;
-import br.com.great.helpful.OperacoesJSON;
+import br.com.great.util.Constants;
+import br.com.great.util.OperacoesJSON;
 import br.com.great.gerenciamento.ServidorJogo;
 import br.com.great.model.Jogador;
 import java.util.ArrayList;

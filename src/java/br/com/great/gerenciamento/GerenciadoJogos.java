@@ -7,10 +7,9 @@ package br.com.great.gerenciamento;
 
 import br.com.great.controller.JogadoresController;
 import br.com.great.controller.JogosController;
-import br.com.great.dao.JogadoresDAO;
-import br.com.great.helpful.Constants;
+import br.com.great.util.Constants;
 import br.com.great.model.Jogo;
-import br.com.great.helpful.OperacoesJSON;
+import br.com.great.util.OperacoesJSON;
 import br.com.great.model.Grupo;
 import br.com.great.model.Jogador;
 import java.util.ArrayList;
@@ -81,6 +80,9 @@ public class GerenciadoJogos extends Thread {
                 case Constants.JOGADOR_SETLOCALIZACAO:
                     jsonResult = gerJogador.setJogadorLocalizacao(json);
                     break;
+                  case Constants.GRUPO_LOCALIZACAOJOGADORES:
+                    jsonResult = enviarLocalizacao(jogo_id, acao);
+                    break;    
                 default:
                 //comandos caso nenhuma das opções anteriores tenha sido escolhida
             }
@@ -173,60 +175,16 @@ public class GerenciadoJogos extends Thread {
         
     }
     
-    
-   /* private void enviarLocalizacao() {
-        for (int i = 0; i < lisJogosExe.size(); i++) {
-            if(alterouLocalizacaoJogador(i)){
-                alterouLocalizacaoJogadorJson(i, lisJogosExe.get(i).getJogo());
+   private JSONArray enviarLocalizacao(int jogo_id, int acao) {
+       JSONArray jogoJson = new JSONArray();
+        for(int i=0;i<lisJogos.size();i++){
+           if(lisJogos.get(i).getJogo().getJogoExe_id() == jogo_id){
+               for(int j=0;j<lisJogos.get(i).getListGrupo().size();j++){
+                    gerGrupo.acao(lisJogos.get(i).getListGrupo().get(j), acao, jogoJson);
+               }
             }
         }
+        return jogoJson;
     }
-
-    private boolean alterouLocalizacaoJogador(int jogo_id) {
-        for (int j = 0; j < lisJogosExe.get(jogo_id).getListGrupo().size(); j++) {
-            for (int h = 0; h < lisJogosExe.get(jogo_id).getListGrupo().get(j).getListJogadores().size(); h++) {
-                if (lisJogosExe.get(jogo_id).getListGrupo().get(j).getListJogadores().get(h).getAtualizarLocalizacao() == 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void alterouLocalizacaoJogadorJson(int jogo_posicao, Jogo jogo) {
-       try{
-        JSONArray jogoJson = new JSONArray();
-        for (int j = 0; j < lisJogosExe.get(jogo_posicao).getListGrupo().size(); j++) {
-            JSONObject grupo = new JSONObject();
-            String[] key = {"grupo_id", "nome"};
-            String[] value = {String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getGrupo().getId()),
-                lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getGrupo().getNome()};
-            grupo.put("grupo",new OperacoesJSON().toJSONObject(key, value));
-            
-            List<JSONObject> listJogador = new ArrayList<JSONObject>();
-            for (int h = 0; h < lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().size(); h++) {
-                String[] keyJogador = {"id", "nome", "latitude", "longitude"};
-                String[] valueJogador = {
-                    String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getId()),
-                    lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getEmail(),
-                    String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getLatitude()),
-                    String.valueOf(lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).getJogador().getLongitude())
-                };
-                lisJogosExe.get(jogo_posicao).getListGrupo().get(j).getListJogadores().get(h).setAtualizarLocalizacao(0);    
-                listJogador.add(new OperacoesJSON().toJSONObject(keyJogador, valueJogador));
-            }
-            grupo.put("jogadores", listJogador);
-            jogoJson.put(grupo);
-        }
-        
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("user", "root");
-        params.put("tipoacao", "atualizaLocalizacao");
-        params.put("localizacao", jogoJson.toString());
-           System.err.println("Json "+ jogoJson.toString());
-        new JogosController().enviarMensagem(jogo.getId(), params);
-       }catch(JSONException ex){
-           System.err.println("Erro msg"+ex);
-       }
-    }*/
+   
 }
