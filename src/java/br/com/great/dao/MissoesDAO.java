@@ -14,9 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Classe responsavel realizar toda a interação com banco de dados relacionado
@@ -68,11 +65,50 @@ public class MissoesDAO extends ConnectionFactory {
                 missoes.add(missao);
             }
         } catch (SQLException e) {
-            System.out.println("Erro no getGrupoJogo: " + e.getMessage());
+            System.out.println("Erro no getMissaoJogo: " + e.getMessage());
         } finally {
             fecharConexao(conexao, pstmt, rs);
         }
+        //carrega os requisitos de cada missao
+        for (int i = 0; i < missoes.size(); i++) {
+            missoes.get(i).setReqMissao(carregaRequisitos(missoes.get(i).getId(), missoes));
+            for (int j = 0; j < missoes.get(i).getMecanica().size(); j++) {
+                missoes.get(i).getMecanica().get(j).setReqMecanicas(MecanicasDAO.getInstance().mecanicaReq(
+                        missoes.get(i).getMecanica().get(j).getId(), missoes.get(i).getMecanica()));
+                
+            }
+        }
         return missoes;
+    }
+
+    private ArrayList<Missao> carregaRequisitos(int missao_id_requisitos, ArrayList<Missao> missoes) {
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection conexao = criarConexao();
+        ArrayList<Missao> missoes_requisitos = new ArrayList<Missao>();
+        try {
+            String sql = "SELECT * FROM reqmissao WHERE reqmissao.missoes_id = " + missao_id_requisitos;
+            pstmt = conexao.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int req_id = rs.getInt("req_id");
+                missoes_requisitos.add(getMissao(req_id, missoes));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro no getReqMissao: " + e.getMessage());
+        } finally {
+            fecharConexao(conexao, pstmt, rs);
+        }
+        return missoes_requisitos;
+    }
+
+    private Missao getMissao(int missao_id, ArrayList<Missao> missoes) {
+        for (int i = 0; i < missoes.size(); i++) {
+            if (missoes.get(i).getId() == missao_id) {
+                return missoes.get(i);
+            }
+        }
+        return null;
     }
 
 }

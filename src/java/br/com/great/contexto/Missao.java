@@ -13,7 +13,7 @@ public class Missao {
 
     private Collection<Engajamento> engajamento;
 
-    private Collection<Missao> requisitos;
+    private ArrayList<Missao> reqMissao;
 
     private ConfiguracaoMissao configuracaoMissao;
 
@@ -57,12 +57,15 @@ public class Missao {
         this.engajamento = engajamento;
     }
 
-    public Collection<Missao> getRequisitos() {
-        return requisitos;
+    public ArrayList<Missao> getReqMissao() {
+        if (reqMissao == null) {
+            reqMissao = new ArrayList<Missao>();
+        }
+        return reqMissao;
     }
 
-    public void setRequisitos(Collection<Missao> requisitos) {
-        this.requisitos = requisitos;
+    public void setReqMissao(ArrayList<Missao> reqMissao) {
+        this.reqMissao = reqMissao;
     }
 
     public ConfiguracaoMissao getConfiguracaoMissao() {

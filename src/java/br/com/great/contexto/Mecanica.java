@@ -10,7 +10,7 @@ public abstract class Mecanica {
 
     private Missao missao;
 
-    private ArrayList<Mecanica> requisitos;
+    private ArrayList<Mecanica> reqMecanicas;
 
     private Estado estado;
 
@@ -46,15 +46,15 @@ public abstract class Mecanica {
         this.missao = missao;
     }
 
-    public ArrayList<Mecanica> getRequisitos() {
-        return requisitos;
+    public ArrayList<Mecanica> getReqMecanicas() {
+        return reqMecanicas;
     }
 
-    public void setRequisitos(ArrayList<Mecanica> requisitos) {
-        this.requisitos = requisitos;
+    public void setReqMecanicas(ArrayList<Mecanica> reqMecanicas) {
+        this.reqMecanicas = reqMecanicas;
     }
 
-
+    
     public Estado getEstado() {
         return estado;
     }

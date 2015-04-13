@@ -26,7 +26,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONException;
 
 /**
  * Classe responsavel realizar toda a interação com banco de dados relacionado
@@ -328,6 +327,36 @@ public class MecanicasDAO extends ConnectionFactory {
             Logger.getLogger(MecanicasDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return irLocal;
+    }
+    
+    public ArrayList<Mecanica> mecanicaReq(int mecanica_id, ArrayList<Mecanica> mecanicas){
+           PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection conexao = criarConexao();
+        ArrayList<Mecanica> mecanicas_requisitos = new ArrayList<Mecanica>();
+        try {
+            String sql = "SELECT * FROM reqmecanica WHERE reqmecanica.mecanica_id = " + mecanica_id;
+            pstmt = conexao.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int req_id = rs.getInt("req_id");
+                mecanicas_requisitos.add(getMecanica(req_id, mecanicas));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro no getReqRequisitos: " + e.getMessage());
+        } finally {
+            fecharConexao(conexao, pstmt, rs);
+        }
+        return mecanicas_requisitos;
+    }
+
+    private Mecanica getMecanica(int missao_id, ArrayList<Mecanica> mecanicas) {
+        for (int i = 0; i < mecanicas.size(); i++) {
+            if (mecanicas.get(i).getId() == missao_id) {
+                return mecanicas.get(i);
+            }
+        }
+        return null;
     }
 
 }

@@ -99,18 +99,21 @@ public class GerenciadorJogos extends Thread {
                     && PlayJogo.getJogadores().get(i).getSenha().equals(senha)) {
                 result = 1;
             }
-            System.err.println(PlayJogo.getJogadores().get(i).getSenha()+" email: "+PlayJogo.getJogadores().get(i).getLogin());
+            System.err.println(PlayJogo.getJogadores().get(i).getSenha() + " email: " + PlayJogo.getJogadores().get(i).getLogin());
         }
         value = new String[]{String.valueOf(result)};
         return new JSONArray().put(new OperacoesJSON().toJSONObject(key, value));
     }
 
     private JSONArray newJogo(int jogo_id, int jogador_id, String nome) throws JSONException {
-        PlayJogo.getJogos().add(new JogosController().getJogo(jogo_id));
+        Jogo jogo = new JogosController().getJogo(jogo_id);
+        if (jogo != null) {
+            jogo.setNomeficticio(nome);
+            jogo.setJogador_iniciou(jogador_id);
+            PlayJogo.getJogos().add(jogo);
+        }
         JSONArray json = new JSONArray();
-        json.put(0,PlayJogo.getJogos());
-        json.put(1,PlayJogo.getMecTextos());
-        json.put(2,PlayJogo.getMecFotos());
+        json.put(0, PlayJogo.getJogos().get(0).getConfiguracaoMissao().get(0).getMissao());
         return json;
     }
 
