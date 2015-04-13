@@ -26,20 +26,11 @@ public final class Constants {
    public static final String API_KEY = "AIzaSyCmu6aVxeFh6ZQ_u1J7DXg_fndmeXGP83g";
    
    public static final int JOGO_NEWJOGO = 1;
-   public static final int JOGO_LISTAGRUPOS = 2;
-   public static final int JOGO_LISTAEXECUTANDO = 3;
+   public static final int JOGO_LISTAJGO = 2;
+   public static final int JOGO_CADASTRAR = 3;
+   public static final int JOGADOR_CADASTRAR = 4;
+   public static final int JOGADOR_LOGIN = 5;
    
-   public static final int GRUPO_INSERIRPARTICIPANTE = 4;
-   public static final int GRUPO_LISTAARQUIVOS = 5;
-   public static final int GRUPO_MECANICAATUAL = 6;
-   public static final int GRUPO_SETSTATUSMECANICA = 7;
-   public static final int GRUPO_GETMECLIBERADA = 10;
-   public static final int JOGADOR_SETLOCALIZACAO = 8;
-   public static final int JOGADOR_ENVIARLOCALIZACAO = 9;
-   public static final int JOGADOR_CADJOGADOR = 10;
-   public static final int JOGADOR_REGDISPOSITIVO = 11;
-   public static final int GRUPO_LOCALIZACAOJOGADORES = 12;
- 
   private Constants() {
     throw new UnsupportedOperationException();
   }

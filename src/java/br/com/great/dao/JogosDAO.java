@@ -6,8 +6,9 @@
 
 package br.com.great.dao;
 
+import br.com.great.contexto.Jogo;
+import br.com.great.contexto.Posicao;
 import br.com.great.factory.ConnectionFactory;
-import br.com.great.model.Jogo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,43 +42,7 @@ public class JogosDAO extends ConnectionFactory{
 		return instance;
 	}
 	
-	/**
-	 * 
-	 * Método responsável por listar todos os pjogos do banco
-	 *
-	 * @return JSONArray lista de jogos
-	 * @author Carleandro Noleto
-	 * @since 27/11/2014
-	 * @version 1.0
-	 */
-	public JSONArray listarTodos(){
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		JSONArray jogos = null;
-		Connection conexao = criarConexao();
-		try {
-                        jogos= new JSONArray();
-                        pstmt = conexao.prepareStatement("select * from jogos order by id");
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()){
-				
-				JSONObject jogo = new JSONObject();
-                                jogo.put("id",rs.getInt("id"));
-                                jogo.put("nome",rs.getString("nome"));
-                                jogo.put("icone",rs.getString("icone"));
-                                jogo.put("longitude",rs.getString("longitude"));
-                                jogo.put("latitude",rs.getString("latitude"));
-				jogos.put(jogo);
-			}
-			
-		} catch (SQLException | JSONException e) {
-			System.out.println("Erro ao listar todos os jogos: " + e.getMessage());
-                } finally {
-			fecharConexao(conexao, pstmt, rs);
-		}
-		return jogos;
-	}
+	
         /**
 	 * Método responsável por listar todos os jogos perto de um local com distancia definida
          *
@@ -89,7 +54,7 @@ public class JogosDAO extends ConnectionFactory{
 	 * @since 27/11/2014
 	 * @version 1.0
 	 */
-        public JSONArray getJogos(double latitude, double longitude, double distancia){
+        public JSONArray getJogos(double latitude, double longitude, int distancia){
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		JSONArray jogos = null;
@@ -101,7 +66,7 @@ public class JogosDAO extends ConnectionFactory{
                                 "SELECT  ((3956 * 2 * ASIN(SQRT(POWER(SIN((abs("+latitude+") - abs(latitude)) *  "
                                 + " pi()/180 / 2),2) + COS(abs("+latitude+") * pi()/180 ) * COS(abs(latitude) * pi()/180) "
                                 + "* POWER(SIN((abs("+longitude+") - abs(longitude)) * 	pi()/180 / 2), 2)))) * 1.609344) as "
-                                + "distancia, nome, id, icone FROM jogos  WHERE status=1 having distancia < "+distancia+" ORDER BY distancia limit 100";
+                                + "distancia, nome, id, icone FROM jogos  having distancia < "+distancia+" ORDER BY distancia limit 100";
                         pstmt = conexao.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
@@ -122,39 +87,6 @@ public class JogosDAO extends ConnectionFactory{
 		return jogos;
 	}
         
-    /**
-     * Lista de todos os jogos que ainda estao sendo executados com status 1
-     * @return JSONArray lista de todos os jogos
-     */
-    public ArrayList<Jogo> getJogosExecutando() {
-        ArrayList<Jogo> jogos= new ArrayList<Jogo>();
-        PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	Connection conexao = criarConexao();
-	try {
-            String sql = "select * from jogos where status="+1;
-            pstmt = conexao.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-            while(rs.next()){
-                Jogo jogo = new Jogo();
-                jogo.setId(rs.getInt("id"));
-                jogo.setNome(rs.getString("nome"));
-                jogo.setIcone(rs.getString("icone"));
-		jogo.setLatitude(rs.getString("latitude"));
-                jogo.setLongitude(rs.getString("longitude"));
-                jogo.setUser_id(rs.getInt("user_id"));
-                jogo.setNomeficticio(rs.getString("nomeficticio"));
-                jogo.setStatus(rs.getInt("status"));
-                jogo.setUser_id(rs.getInt("user_id"));
-                jogos.add(jogo);
-            }
-        } catch (SQLException e) {
-            System.out.println("Erro no getJogosExecutando: " + e.getMessage());
-        } finally {
-            fecharConexao(conexao, pstmt, rs);
-	}
-        return jogos;
-    }
     
     /**
      * Retorna um jogo com todos os seus dados
@@ -173,12 +105,9 @@ public class JogosDAO extends ConnectionFactory{
                 jogo.setId(rs.getInt("id"));
                 jogo.setNome(rs.getString("nome"));
                 jogo.setIcone(rs.getString("icone"));
-		jogo.setLatitude(rs.getString("latitude"));
-                jogo.setLongitude(rs.getString("longitude"));
-                jogo.setUser_id(rs.getInt("user_id"));
+                jogo.setPosicao(new Posicao(rs.getDouble("latitude"), rs.getDouble("longitude")));
                 jogo.setNomeficticio(rs.getString("nomeficticio"));
                 jogo.setStatus(rs.getInt("status"));
-                jogo.setUser_id(rs.getInt("user_id"));
                 return jogo;
             }
         } catch (SQLException e) {

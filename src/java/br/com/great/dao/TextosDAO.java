@@ -5,6 +5,9 @@
  */
 package br.com.great.dao;
 
+import br.com.great.contexto.CapturarObjeto;
+import br.com.great.contexto.Posicao;
+import br.com.great.contexto.Texto;
 import br.com.great.factory.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,22 +47,22 @@ public class TextosDAO extends ConnectionFactory{
 	 * @since 14/01/2015
 	 * @version 1.0
 	 */
-        public JSONObject getMecVTexto(int mecanica_id){
+        public Texto getMecVTexto(int mecanica_id){
                	PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		Connection conexao = criarConexao();
-                JSONObject vtexto =null;
+                Texto vtexto =null;
                 try{
-                        String sql = "SELECT * FROM  `vtextos` WHERE  `vtextos`.`mecanica_id` =  "+mecanica_id;
+                        String sql = "SELECT * FROM  `vtextos` WHERE  `vtextos`.`mecsimples_id` =  "+mecanica_id;
                         pstmt = conexao.prepareStatement(sql);
                         rs = pstmt.executeQuery();
 			rs.next();
-				vtexto = new JSONObject();
-                                vtexto.put("id",rs.getInt("id"));
-                                vtexto.put("texto",rs.getString("texto"));
-                                vtexto.put("mecanicas_id",rs.getInt("mecanica_id"));
+				vtexto = new Texto();
+                                vtexto.setTexto_id(rs.getInt("id"));
+                                vtexto.setTexto(rs.getString("texto"));
+                                vtexto.setMecsimples_id(rs.getInt("mecanica_id"));
                                 
-		} catch (SQLException | JSONException e) {
+		} catch (SQLException e) {
 			System.out.println("Erro ao listar dados de uma mecanica texto: " + e.getMessage());
                 } finally {
 			fecharConexao(conexao, pstmt, rs);
@@ -115,25 +118,25 @@ public class TextosDAO extends ConnectionFactory{
 	 * @since 19/01/2015
 	 * @version 1.0
 	 */
-        public JSONObject getMecCTextos(int mecanica_id){
+        public Texto getMecCTextos(int mecanica_id){
                 PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		Connection conexao = criarConexao();
-                JSONObject cTextos =null;
+                Texto cTextos =null;
                 try{
-                        String sql = "SELECT * FROM  `ctextos` WHERE  `ctextos`.`mecanica_id` =  "+mecanica_id;
+                        String sql = "SELECT * FROM  `ctextos` WHERE  `ctextos`.`mecsimples_id` =  "+mecanica_id;
                         pstmt = conexao.prepareStatement(sql);
                         rs = pstmt.executeQuery();
 			if(rs.next()){
-				cTextos = new JSONObject();
-                                cTextos.put("id",rs.getInt("id"));
-                                cTextos.put("texto",rs.getString("texto"));
-                                cTextos.put("jogador_id",rs.getString("jogador_id"));
-                                cTextos.put("latitude",rs.getString("latitude"));
-                                cTextos.put("longitude",rs.getString("longitude"));
-                                cTextos.put("mecanicas_id",rs.getInt("mecanica_id"));
+				cTextos = new Texto();
+                                cTextos.setTexto_id(rs.getInt("id"));
+                                cTextos.setTexto(rs.getString("texto"));
+                                cTextos.setCapturarObjeto(new CapturarObjeto());
+                                cTextos.getCapturarObjeto().setJogador_id(rs.getInt("jogador_id"));
+                                cTextos.getCapturarObjeto().setPosicao(new Posicao(rs.getDouble("latitude"), rs.getDouble("longitude")));
+                                cTextos.setMecsimples_id(rs.getInt("mecsimples_id"));
                         }
-		} catch (SQLException | JSONException e) {
+		} catch (SQLException e) {
 			System.out.println("Erro ao listar dados de uma mecanica cTextos: " + e.getMessage());
                 } finally {
 			fecharConexao(conexao, pstmt, rs);

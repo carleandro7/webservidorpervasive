@@ -14,7 +14,7 @@ import org.json.JSONArray;
 public class ServidorJogo {
 
     private Thread servidor;
-    private GerenciadoJogos gerJogos;
+    private GerenciadorJogos gerJogos;
 
     private static ServidorJogo instance;
 
@@ -37,7 +37,7 @@ public class ServidorJogo {
 
     public boolean StartServidor() {
         if (servidor == null) {
-            gerJogos = new GerenciadoJogos();
+            gerJogos = new GerenciadorJogos();
             gerJogos.carregaJogadores();
             servidor = new Thread(gerJogos);
             servidor.start();
@@ -47,7 +47,7 @@ public class ServidorJogo {
 
     public boolean StopServidor() {
         if (servidor != null) {
-            servidor.interrupt();
+            servidor.interrupt();     
             gerJogos = null;
         }
         servidor.stop();
@@ -55,11 +55,7 @@ public class ServidorJogo {
         return true;
     }
 
-    public JSONArray acao(int acao, int jogo_id, JSONArray json) {
-        return gerJogos.acao(acao, jogo_id, json);
-    }
-
-    public JSONArray acaoGrupo(int acao, int grupo_id, int jogo_id, JSONArray json) {
-        return gerJogos.acaoGrupo(acao, grupo_id, jogo_id, json);
+    public JSONArray acao(JSONArray json) {
+        return gerJogos.acao(json);
     }
 }

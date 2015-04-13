@@ -6,10 +6,9 @@
 
 package br.com.great.controller;
 
+import br.com.great.contexto.Jogador;
 import br.com.great.dao.JogadoresDAO;
-import br.com.great.model.Jogador;
 import java.util.ArrayList;
-import org.json.JSONArray;
 
 /**
  * Classe responsavel por fazer o controle entre os serviços oferecidos pelo jogos
@@ -54,7 +53,7 @@ public class JogadoresController {
      * @param password String
      * @return String true se cadastrado com sucesso
      */
-    public Jogador cadastrarJogador(String email, String password) {
+    public int cadastrarJogador(String email, String password) {
         System.out.println("Enviando para o GIT");
 		return JogadoresDAO.getInstance().cadastrar(email, password);
     }
@@ -71,26 +70,4 @@ public class JogadoresController {
 		return JogadoresDAO.getInstance().registroDevice(jogador_id, device_id);
     }
     
-    public ArrayList<Jogador> getJogadores(int grupo_id) {
-        return JogadoresDAO.getInstance().getJogadores(grupo_id);
-    }
-
-    public ArrayList<Jogador> getJogadoresAll() {
-        return JogadoresDAO.getInstance().getJogadoresAll();
-    }
-    /**
-     * Lista de todos os arquivos iniciais de um jogo para um jogador
-     * @param grupo_id int
-     * @param latitude String
-     * @param longitude String
-     * @return JSONArray lista de todos os arquivos
-     */
-    public JSONArray getTodosArquivos(int grupo_id, String latitude, String longitude) {
-        return JogadoresDAO.getInstance().getTodosArquivos(grupo_id, latitude, longitude);        
-    }
-
-    public JSONArray getTodosArquivos(int grupo_id) {
-        //return JogadoresDAO.getInstance().getTodosArquivos(grupo_id);
-        return null;
-    }
 }

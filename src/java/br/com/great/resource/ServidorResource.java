@@ -13,6 +13,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
+import javax.ws.rs.QueryParam;
+import org.json.JSONArray;
 
 /**
  * REST Web Service do Servidor
@@ -60,6 +62,17 @@ public class ServidorResource {
     @Produces("application/json")
     public String startServidor() {           
         return Boolean.toString(ServidorJogo.getInstance().StartServidor());
+    }
+    /**
+     * Método responsável por listar todos os pjogos
+     * @return String Dados do jogo
+     */
+    @GET
+    @Path("/getJogo")
+    @Produces("application/json")
+    public String getJogo(@QueryParam("json") JSONArray jogoJson) {
+        //TODO return proper representation object
+        return ServidorJogo.getInstance().acao(jogoJson).toString();
     }
     
     /**
